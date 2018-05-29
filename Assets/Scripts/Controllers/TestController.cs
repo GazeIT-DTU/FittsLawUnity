@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Pupil;
 using UnityEngine;
 using UnityEngine.UI;
 using Valve.VR;
+using DxCalculationSet = TestDataHelper.DxCalculationSet;
 
 public class TestController : MonoBehaviour
 {
@@ -34,8 +36,7 @@ public class TestController : MonoBehaviour
     private PupilGazeTracker _pupilGazeTracker;
     private AudioSource _audioSourceBeep;
     private int _currentTrialNumber;
-    private int _offsetTargetIndex;
-    private int _targetIndex;
+    private int _trialIndex;
     private int _sequenceIndex = -1;
     private int _numberOfErrors;
     private int _repeatedFailedSessions;
@@ -44,7 +45,6 @@ public class TestController : MonoBehaviour
     private int _numberOfVerificationTargets = 9;
     private int _verificationTargetIndex = 0;
     private double _startMilli;
-    private bool _offsetTarget;
     private bool _cameraColorSet;
     private bool _logData;
     private bool _firstTarget;
@@ -72,7 +72,7 @@ public class TestController : MonoBehaviour
             LoadTestData(_storedTestBlock);
         else
         //If you need to run this scene repeatedly to test, create TestBlockData and load with LoadTestData(TestBlockData) and play project from MainScene
-            LoadTestData(new TestBlock(TestBlock.VRHMD.VIVE, "TestBlockData", "TestParticipant", "TestCondition", 5, new List<int>() {80}, new List<float>() { 50, 50 }, 100, 2, 
+            LoadTestData(new TestBlock(TestBlock.VRHMD.NoHMD, "TestBlockData", "TestParticipant", "TestCondition", 11, new List<int>() {80}, new List<float>() { 50, 50 }, 100, 2, 
                 TestBlock.ControlMethod.Mouse, TestBlock.ConfirmationMethod.Click, 200, 80000, 5, 12, false, true, true, true, true, false,
                 new Color32(67, 67, 67, 255), Color.yellow, Color.black, new Color32(200, 200, 200, 255), new Color32(128, 128, 128, 255), Color.red));
     }
@@ -205,11 +205,9 @@ public class TestController : MonoBehaviour
         if (_sequenceIndex >= TestBlockData.Sequences.Count) return;
         Cursor.lockState = CursorLockMode.Locked;
         GazeCursor.Instance.SetEnabled(_showCursor);
-        _targetIndex = 0;
+        _trialIndex = -1;
         _timeoutTimer = 0;
-        _offsetTargetIndex = 0;
         _numberOfErrors = 0;
-        _offsetTarget = false;
         IsRunning = true;
         _firstTarget = true;
         _targetCanvas.renderMode = RenderMode.WorldSpace;
@@ -255,19 +253,35 @@ public class TestController : MonoBehaviour
         {
             Debug.Log("----Test Sequence Completed Successfully----");
             //Calculate result data for sequence just completed
-            TestBlockData.Sequences[_sequenceIndex].Throughput = TestDataHelper.CalculateThroughput(new List<int>() { TestBlockData.Sequences[_sequenceIndex].TargetAmplitude },
-                TestDataHelper.CalculateDeltaX(TestBlockData.Sequences[_sequenceIndex].GetTrialCenterError()),
-                TestBlockData.Sequences[_sequenceIndex].GetMovementTimes());
+            List<DxCalculationSet> calculationSets = new List<DxCalculationSet>();
+
+            for (int i = 0; i < TestBlockData.Sequences[_sequenceIndex].Trials.Count; i++) 
+            {
+                DxCalculationSet calcSet = new DxCalculationSet();
+                TestTrial fromTarget = null;
+                if (i == 0)
+                    fromTarget = TestBlockData.Sequences[_sequenceIndex].Trials[TestBlockData.Sequences[_sequenceIndex].Trials.Count - 1];
+                else
+                    fromTarget = TestBlockData.Sequences[_sequenceIndex].Trials[i-1];
+
+                TestTrial toTarget = TestBlockData.Sequences[_sequenceIndex].Trials[i];
+
+                calcSet.From = GetTargetSpawnPosition(TestBlockData.Sequences[_sequenceIndex].TargetAmplitude, fromTarget.TargetAngle);
+                calcSet.To = GetTargetSpawnPosition(TestBlockData.Sequences[_sequenceIndex].TargetAmplitude, toTarget.TargetAngle);
+                calcSet.Selection = calcSet.To + toTarget.TargetCenterError;
+
+                calculationSets.Add(calcSet);
+            }
+            List<double> dxs = TestDataHelper.CalculateDeltaX(calculationSets);
+            List<double> ae = dxs.Select(dx => dx + TestBlockData.Sequences[_sequenceIndex].TargetAmplitude).ToList();
+
+            TestBlockData.Sequences[_sequenceIndex].Throughput = TestDataHelper.CalculateThroughput(ae, dxs, TestBlockData.Sequences[_sequenceIndex].GetMovementTimes());
             TestBlockData.Sequences[_sequenceIndex].CalculateMeanMovementTime();
             TestBlockData.Sequences[_sequenceIndex].Errors = _numberOfErrors;
             TestBlockData.Sequences[_sequenceIndex].CalculateErrorRate();
-            TestBlockData.Sequences[_sequenceIndex].CalculateEffectiveAmplitude();
-            List<float> deltaX = TestDataHelper.CalculateDeltaX(TestBlockData.Sequences[_sequenceIndex].GetTrialCenterError());
-            TestBlockData.Sequences[_sequenceIndex].EffectiveTargetWidth = TestDataHelper.CalculateEffectiveWidth(deltaX);
-            TestBlockData.Sequences[_sequenceIndex].EffecttiveIndexOfDifficulty =
-                TestDataHelper.CalculateEffectiveDifficultyIndex(new List<int>() { TestBlockData.Sequences[_sequenceIndex].TargetAmplitude },
-                    TestBlockData.Sequences[_sequenceIndex].EffectiveTargetWidth);
-            TestBlockData.Sequences[_sequenceIndex].UpdateAnglesBeforeLogging();
+            TestBlockData.Sequences[_sequenceIndex].EffectiveAmplitude = TestDataHelper.Mean(ae);
+            TestBlockData.Sequences[_sequenceIndex].EffectiveTargetWidth = TestDataHelper.CalculateEffectiveWidth(dxs);
+            TestBlockData.Sequences[_sequenceIndex].EffecttiveIndexOfDifficulty = TestDataHelper.CalculateEffectiveDifficultyIndex(ae, TestBlockData.Sequences[_sequenceIndex].EffectiveTargetWidth);
             ClearInitialTargets();
             StopTest();
         }
@@ -299,7 +313,10 @@ public class TestController : MonoBehaviour
     {
         if (_firstTarget)
         {
-            SpawnTarget(_sequenceIndex, TestBlockData.NumberOfTargets/2, true);
+            if (TestBlockData.NumberOfTargets % 2 == 0)
+                SpawnTarget(_sequenceIndex, TestBlockData.NumberOfTargets - 2, true);
+            else
+                SpawnTarget(_sequenceIndex, TestBlockData.NumberOfTargets - 1, true);
             return;
         }
         _timeoutTimer = 0;
@@ -310,14 +327,11 @@ public class TestController : MonoBehaviour
             return;
         }
 
-        int nextTargetIndex = (!_offsetTarget) ? _targetIndex : _offsetTargetIndex + Mathf.CeilToInt(TestBlockData.NumberOfTargets/2f);
-        if (_offsetTarget) _offsetTargetIndex++;
-        else _targetIndex++;
-        _offsetTarget = !_offsetTarget;
+        _trialIndex++;
         _vrEyeTrackerController.StartTrackingMovement();
         _totalCursorMovement = 0;
         _startMilli = GetNowInMilliseconds();
-        SpawnTarget(_sequenceIndex, nextTargetIndex, true);
+        SpawnTarget(_sequenceIndex, _trialIndex, true);
         TestBlockData.Sequences[_sequenceIndex].Trials[_currentTrialNumber].StartTime = DateTime.Now;
         TestBlockData.Sequences[_sequenceIndex].Trials[_currentTrialNumber].TrialNumber = _currentTrialNumber;
         _logData = true;

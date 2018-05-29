@@ -17,13 +17,12 @@ class TestDataHelper {
     /// Calculate the throughput of the sequence.
     /// </summary>
     /// <param name="amplitudes"> Amplitude of the sequence.</param>
-    /// <param name="deltaX"></param>
+    /// <param name="dx"></param>
     /// <param name="times"> Mean completion time of the sequence of trials.</param>
     /// <returns> Returns the throughput for the sequence of trials.</returns>
-    public static float CalculateThroughput(List<int> amplitudes, List<float> deltaX, List<double> times ) {
-        float aeMean = Mean(amplitudes);
-        float sdx = StandardDeviation(deltaX);
-        float we = SQRT_2_PI_E * sdx;
+    public static float CalculateThroughput(List<double> ae, List<double> dx, List<double> times ) {
+        float aeMean = Mean(ae);
+        float we = CalculateEffectiveWidth(dx);
         //float ide = (float)Math.Log(aeMean / we + 1f) / LOG_TWO; // bits
         float ide = (float)Math.Log(aeMean / we + 1f, 2); // bits
         float mtMean = Mean(times) / 1000f; // seconds
@@ -33,11 +32,11 @@ class TestDataHelper {
     /// <summary>
     /// Calculate the effective width of the sequence.
     /// </summary>
-    /// <param name="deltaX"></param>
+    /// <param name="dx"></param>
     /// <returns> Returns the effective width.</returns>
-    public static float CalculateEffectiveWidth(List<float> deltaX)
+    public static float CalculateEffectiveWidth(List<double> dx)
     {
-        return SQRT_2_PI_E * StandardDeviation(deltaX);
+        return SQRT_2_PI_E * StandardDeviation(dx);
     }
 
     /// <summary>
@@ -46,9 +45,9 @@ class TestDataHelper {
     /// <param name="amplitudes"></param>
     /// <param name="effectiveWidth"></param>
     /// <returns> Return the index of difficulty.</returns>
-    public static float CalculateEffectiveDifficultyIndex(List<int> amplitudes, float effectiveWidth)
+    public static float CalculateEffectiveDifficultyIndex(List<double> ae, float effectiveWidth)
     {
-        return (float)Math.Log(Mean(amplitudes) / effectiveWidth + 1f) / LOG_TWO; // bits
+        return (float)Math.Log(Mean(ae) / effectiveWidth + 1f) / LOG_TWO; // bits
     }
 
     /// <summary>
@@ -118,20 +117,52 @@ class TestDataHelper {
 
         return (float)Math.Sqrt(t / (n.Count - 1.0f));
     }
+    
+    /// <summary>
+    /// Calculate the standard deviation of values in a float array.
+    /// </summary>
+    /// <param name="n"> List of floats n.</param>
+    /// <returns> Return the standard deviation.</returns>
+    public static float StandardDeviation(List<double> n) {
+        float m = Mean(n);
+        float t = 0;
+        foreach (float val in n)
+            t += (m - val) * (m - val);
 
-    /*
-     * Convert list of Vector2 offsets to list of magnitude values
-     */
+        return (float)Math.Sqrt(t / (n.Count - 1.0f));
+    }
+
     /// <summary>
     /// Convert list of Vector2 offsets to list of magnitude values.
     /// </summary>
-    /// <param name="deltas"> List of Vector2 offsets.</param>
-    /// <returns> Return the list of magnitudes.</returns>
-    public static List<float> CalculateDeltaX(List<Vector2> deltas)
+    public static List<double> CalculateDeltaX(List<DxCalculationSet> calculationSets)
     {
-        List<float> deltaX = new List<float>();
-        foreach (Vector2 delta in deltas)
-            deltaX.Add(delta.magnitude);
-        return deltaX;
+        List<double> dxs = new List<double>();
+
+        foreach (DxCalculationSet set in calculationSets)
+        {
+            float x = set.Selection.x;
+            float y = set.Selection.y;
+            float x1 = set.From.x;
+            float y1 = set.From.y;
+            float x2 = set.To.x;
+            float y2 = set.To.y;
+
+            double a = Hypotenuse(x1 - x2, y1 - y2);
+            double b = Hypotenuse(x - x2, y - y2);
+            double c = Hypotenuse(x1 - x, y1 - y);
+
+            double dx = (c * c - b * b - a * a) / (2.0f * a);
+            dxs.Add(dx);
+        }
+
+        return dxs;
+    }
+
+    public struct DxCalculationSet
+    {
+        public Vector2 From;
+        public Vector2 To;
+        public Vector2 Selection;
     }
 }

@@ -62,24 +62,29 @@ public class TestSequence {
             float angle = i * deltaAngle;
             steps.Add(new TestTrial(angle + 90));
         }
-        return steps;
-    }
-    
-    /// <summary>
-    /// Calculate the mean effective amplitude. 
-    /// </summary>
-    public void CalculateEffectiveAmplitude()
-    {
-        List<double> effectiveAmplitudes = new List<double>();
-        for (int i = 0; i < Trials.Count; i++)
+
+        TestTrial[] sortedSteps = new TestTrial[amountOfTargets];
+        //Even
+        int firstHalfCounter = 0;
+        int secondHalfCounter = 0;
+        bool isFirstHalf = true;
+
+        for (int i = 0; i < amountOfTargets; i++)
         {
-            Vector2 from = Vector2.zero;
-            if (i > 0)
-                from = TestController.GetTargetSpawnPosition(TargetAmplitude, Trials[i-1].TargetAngle);
-            Vector2 to = TestController.GetTargetSpawnPosition(TargetAmplitude, Trials[i].TargetAngle);
-            effectiveAmplitudes.Add(Trials[i].CalculateTrialAe(from, to, to + Trials[i].TargetCenterError));
+            if (isFirstHalf)
+            {
+                sortedSteps[i] = steps[firstHalfCounter];
+                firstHalfCounter++;
+            }
+            else
+            {
+                sortedSteps[i] = steps[secondHalfCounter + Mathf.CeilToInt(amountOfTargets / 2f)];
+                secondHalfCounter++;
+            }
+            isFirstHalf = !isFirstHalf;
         }
-        EffectiveAmplitude = TestDataHelper.Mean(effectiveAmplitudes);
+
+        return sortedSteps.ToList();
     }
     
     /// <summary>
@@ -115,27 +120,7 @@ public class TestSequence {
     {
         ErrorRate = ((float) Errors / (float) Trials.Count) * 100;
     }
-
-    /// <summary>
-    /// The Fitts' Law Experiment requires targets to spawn by alternating positions around a circle.
-    /// This function updates the angle for each target after spawning.
-    /// </summary>
-    public void UpdateAnglesBeforeLogging()
-    {
-        float deltaAngle = 360f / Trials.Count;
-        for (int i = 0; i < Trials.Count; i++)
-        {
-            if (i % 2 == 0)
-            {
-                Trials[i].UpdateTrialAngleForLogging(Mathf.FloorToInt(i / 2) * deltaAngle);
-            }
-            else
-            {
-                Trials[i].UpdateTrialAngleForLogging((Mathf.CeilToInt(Trials.Count / 2) + Mathf.CeilToInt(i / 2) + 1) * deltaAngle);
-            }
-        }
-    }
-
+    
     /// <summary>
     /// 
     /// </summary>

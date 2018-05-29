@@ -38,20 +38,7 @@ public class TestTrial
         TargetAngle = targetAngle;
         Logs = new List<DataLog>();
     }
-
-    /// <summary>
-    /// Effective amplitude calculation.
-    /// </summary>
-    /// <param name="from"> Position on the canvas of the center of the previous target.</param>
-    /// <param name="to"> Position on the canvas of the center of the current target.</param>
-    /// <param name="select"> Position on the canvas where the activation of the current target happened.</param>
-    /// <returns></returns>
-    public double CalculateTrialAe(Vector2 from, Vector2 to, Vector2 select) {
-        double a = TestDataHelper.Hypotenuse(to.x - from.x, to.y - from.y);
-        double dx = (select - to).magnitude;
-        return a + dx;
-    }
-
+    
     /// <summary>
     /// Add new DataLog to a list of DataLogs.
     /// </summary>
@@ -104,16 +91,7 @@ public class TestTrial
         }
         return dtoLogs;
     }
-
-    /// <summary>
-    /// Adjust TargetAngle prior to TestTrialDTO creation. 
-    /// </summary>
-    /// <param name="finalAngle"></param>
-    public void UpdateTrialAngleForLogging(float finalAngle)
-    {
-        TargetAngle = finalAngle;
-    }
-
+    
     public override string ToString()
     {
         string s = "StartTime: " + TrialNumber + ": TimeToFixate " + TimeToFixate + ", TimeToActivate " + TimeToActivate +
