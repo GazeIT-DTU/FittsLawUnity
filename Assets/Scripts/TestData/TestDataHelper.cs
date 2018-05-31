@@ -9,8 +9,8 @@ using UnityEngine;
 /// </summary>
 class TestDataHelper {
 
-    private const float LOG_TWO = 0.693147181f;
-    private const float SQRT_2_PI_E = 4.132731354f;
+    private const double LOG_TWO = 0.693147181f;
+    private const double SQRT_2_PI_E = 4.132731354f;
 
 
     /// <summary>
@@ -20,12 +20,12 @@ class TestDataHelper {
     /// <param name="dx"></param>
     /// <param name="times"> Mean completion time of the sequence of trials.</param>
     /// <returns> Returns the throughput for the sequence of trials.</returns>
-    public static float CalculateThroughput(List<double> ae, List<double> dx, List<double> times ) {
-        float aeMean = Mean(ae);
-        float we = CalculateEffectiveWidth(dx);
+    public static double CalculateThroughput(List<double> ae, List<double> dx, List<double> times ) {
+        double aeMean = Mean(ae);
+        double we = CalculateEffectiveWidth(dx);
         //float ide = (float)Math.Log(aeMean / we + 1f) / LOG_TWO; // bits
-        float ide = (float)Math.Log(aeMean / we + 1f, 2); // bits
-        float mtMean = Mean(times) / 1000f; // seconds
+        double ide = Math.Log(aeMean / we + 1f, 2); // bits
+        double mtMean = Mean(times) / 1000f; // seconds
         return ide / mtMean; // bits per second
     }
 
@@ -34,7 +34,7 @@ class TestDataHelper {
     /// </summary>
     /// <param name="dx"></param>
     /// <returns> Returns the effective width.</returns>
-    public static float CalculateEffectiveWidth(List<double> dx)
+    public static double CalculateEffectiveWidth(List<double> dx)
     {
         return SQRT_2_PI_E * StandardDeviation(dx);
     }
@@ -45,9 +45,9 @@ class TestDataHelper {
     /// <param name="amplitudes"></param>
     /// <param name="effectiveWidth"></param>
     /// <returns> Return the index of difficulty.</returns>
-    public static float CalculateEffectiveDifficultyIndex(List<double> ae, float effectiveWidth)
+    public static double CalculateEffectiveDifficultyIndex(List<double> ae, double effectiveWidth)
     {
-        return (float)Math.Log(Mean(ae) / effectiveWidth + 1f) / LOG_TWO; // bits
+        return Math.Log(Mean(ae) / effectiveWidth + 1f) / LOG_TWO; // bits
     }
 
     /// <summary>
@@ -56,7 +56,7 @@ class TestDataHelper {
     /// <param name="amplitude"></param>
     /// <param name="width"></param>
     /// <returns>Return the index of difficulty.</returns>
-    public static double CalculateIndexOfDifficulty(float amplitude, float width) {
+    public static double CalculateIndexOfDifficulty(double amplitude, double width) {
         return Math.Log(amplitude / width + 1) / LOG_TWO;
     }
     
@@ -65,10 +65,10 @@ class TestDataHelper {
     /// </summary>
     /// <param name="n"> List of floats n.</param>
     /// <returns> Return the mean.</returns>
-    public static float Mean(List<float> n )
+    public static double Mean(List<double> n )
     {
-        float mean = 0;
-        foreach (float val in n)
+        double mean = 0;
+        foreach (double val in n)
             mean += val;
         return mean / n.Count;
     }
@@ -79,18 +79,9 @@ class TestDataHelper {
     /// </summary>
     /// <param name="n"> List of ints n.</param>
     /// <returns> Return the list.</returns>
-    public static float Mean(List<int> n)
+    public static double Mean(List<int> n)
     {
-        return Mean(new List<float>(n.ConvertAll(x => (float)x)));
-    }
-
-    /// <summary>
-    /// Convert a list of doubles to a list of floats.
-    /// </summary>
-    /// <param name="n"> List of doubles n.</param>
-    /// <returns> Return the list.</returns>
-    public static float Mean(List<double> n) {
-        return Mean(new List<float>(n.ConvertAll(x => (float)x)));
+        return Mean(new List<double>(n.ConvertAll(x => (double)x)));
     }
     
     /// <summary>
@@ -99,7 +90,7 @@ class TestDataHelper {
     /// <param name="a"></param>
     /// <param name="b"></param>
     /// <returns> Return the hypotenuse.</returns>
-    public static double Hypotenuse(float a, float b)
+    public static double Hypotenuse(double a, double b)
     {
         return Math.Sqrt(Math.Pow(a, 2) + Math.Pow(b, 2));
     }
@@ -109,29 +100,15 @@ class TestDataHelper {
     /// </summary>
     /// <param name="n"> List of floats n.</param>
     /// <returns> Return the standard deviation.</returns>
-    public static float StandardDeviation(List<float> n) {
-        float m = Mean(n);
-        float t = 0;
-        foreach (float val in n)
+    public static double StandardDeviation(List<double> n) {
+        double m = Mean(n);
+        double t = 0;
+        foreach (double val in n)
             t += (m - val) * (m - val);
 
-        return (float)Math.Sqrt(t / (n.Count - 1.0f));
+        return Math.Sqrt(t / (n.Count - 1.0f));
     }
-    
-    /// <summary>
-    /// Calculate the standard deviation of values in a float array.
-    /// </summary>
-    /// <param name="n"> List of floats n.</param>
-    /// <returns> Return the standard deviation.</returns>
-    public static float StandardDeviation(List<double> n) {
-        float m = Mean(n);
-        float t = 0;
-        foreach (float val in n)
-            t += (m - val) * (m - val);
-
-        return (float)Math.Sqrt(t / (n.Count - 1.0f));
-    }
-
+   
     /// <summary>
     /// Convert list of Vector2 offsets to list of magnitude values.
     /// </summary>
@@ -141,12 +118,12 @@ class TestDataHelper {
 
         foreach (DxCalculationSet set in calculationSets)
         {
-            float x = set.Selection.x;
-            float y = set.Selection.y;
-            float x1 = set.From.x;
-            float y1 = set.From.y;
-            float x2 = set.To.x;
-            float y2 = set.To.y;
+            double x = set.Selection.x;
+            double y = set.Selection.y;
+            double x1 = set.From.x;
+            double y1 = set.From.y;
+            double x2 = set.To.x;
+            double y2 = set.To.y;
 
             double a = Hypotenuse(x1 - x2, y1 - y2);
             double b = Hypotenuse(x - x2, y - y2);

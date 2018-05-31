@@ -16,14 +16,14 @@ public class TestVerification {
     public Vector2 TargetPosition;
     public Vector2 CursorPosition;
     public Vector2 GazePosition;
-    public float? PupilDiameterLeft;
-    public float? PupilDiameterRight;
-    public float? PupilDiameter3DLeft;
-    public float? PupilDiameter3DRight;
-    public float? PupilConfidenceLeft;
-    public float? PupilConfidenceRight;
-    public float? PupilTimestampLeft;
-    public float? PupilTimestampRight;
+    public double? PupilDiameterLeft;
+    public double? PupilDiameterRight;
+    public double? PupilDiameter3DLeft;
+    public double? PupilDiameter3DRight;
+    public double? PupilConfidenceLeft;
+    public double? PupilConfidenceRight;
+    public double? PupilTimestampLeft;
+    public double? PupilTimestampRight;
     public Vector2 NosePosition;
     public float? HmdPositionX;
     public float? HmdPositionY;
@@ -53,8 +53,8 @@ public class TestVerification {
     /// <param name="hmdRotationX"> X coordinate rotation of the hmd.</param>
     /// <param name="hmdRotationY"> Y coordinate rotation of the hmd.</param>
     /// <param name="hmdRotationZ"> Z coordinate rotation of the hmd.</param>
-    public TestVerification(int targetIndex, Vector2 targetPosition, Vector2 cursorPosition, Vector2 gazePosition, float? pupilDiameterLeft, float? pupilDiameterRight,
-        float? pupilDiameter3DLeft, float? pupilDiameter3DRight, float? pupilConfidenceLeft, float? pupilConfidenceRight, float? pupilTimestampLeft, float? pupilTimestampRight,
+    public TestVerification(int targetIndex, Vector2 targetPosition, Vector2 cursorPosition, Vector2 gazePosition, double? pupilDiameterLeft, double? pupilDiameterRight,
+        double? pupilDiameter3DLeft, double? pupilDiameter3DRight, double? pupilConfidenceLeft, double? pupilConfidenceRight, double? pupilTimestampLeft, double? pupilTimestampRight,
         Vector2 nosePosition, float? hmdPositionX, float? hmdPositionY, float? hmdPositionZ, float? hmdRotationX, float? hmdRotationY, float? hmdRotationZ) {
         TimeStamp = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss.fff tt");
         TargetIndex = targetIndex;

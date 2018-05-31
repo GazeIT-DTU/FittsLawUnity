@@ -19,14 +19,14 @@ public class DataLogDTO
     public float CursorPositionY { get; set; }
     public float GazePositionX { get; set; }
     public float GazePositionY { get; set; }
-    public float? PupilDiameterLeft { get; set; }
-    public float? PupilDiameter3DLeft { get; set; }
-    public float? PupilDiameter3DRight { get; set; }
-    public float? PupilDiameterRight { get; set; }
-    public float? PupilConfidenceLeft{ get; set; }
-    public float? PupilConfidenceRight { get; set; }
-    public float? PupilTimestampLeft { get; set; }
-    public float? PupilTimestampRight { get; set; }
+    public double? PupilDiameterLeft { get; set; }
+    public double? PupilDiameter3DLeft { get; set; }
+    public double? PupilDiameter3DRight { get; set; }
+    public double? PupilDiameterRight { get; set; }
+    public double? PupilConfidenceLeft{ get; set; }
+    public double? PupilConfidenceRight { get; set; }
+    public double? PupilTimestampLeft { get; set; }
+    public double? PupilTimestampRight { get; set; }
     public float HeadMovement { get; set; }
     public float NosePositionX { get; set; }
     public float NosePositionY { get; set; }
@@ -64,8 +64,8 @@ public class DataLogDTO
     /// <param name="hmdRotationY"> Y coordinate rotation of the hmd.</param>
     /// <param name="hmdRotationZ"> Z coordinate rotation of the hmd.</param>
     public DataLogDTO(int testTrialId, string timeStamp,
-        double msProgress, float cursorPositionX, float cursorPositionY, float gazePositionX, float gazePositionY, float? pupilDiameterLeft, float? pupilDiameterRight,
-        float? pupilDiameter3DLeft, float? pupilDiameter3DRight, float? pupilConfidenceLeft, float? pupilConfidenceRight, float? pupilTimestampLeft, float? pupilTimestampRight,
+        double msProgress, float cursorPositionX, float cursorPositionY, float gazePositionX, float gazePositionY, double? pupilDiameterLeft, double? pupilDiameterRight,
+        double? pupilDiameter3DLeft, double? pupilDiameter3DRight, double? pupilConfidenceLeft, double? pupilConfidenceRight, double? pupilTimestampLeft, double? pupilTimestampRight,
         float headMovement, float nosePositionX, float nosePositionY, float? hmdPositionX, float? hmdPositionY, float? hmdPositionZ, float? hmdRotationX, float? hmdRotationY, float? hmdRotationZ) {
         TestTrialId = testTrialId;
         TimeStamp = timeStamp;

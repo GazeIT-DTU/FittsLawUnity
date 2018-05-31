@@ -89,14 +89,14 @@ public class TestController : MonoBehaviour
 
         if (_logData)
         {
-            float? pupilDiameterLeft = null;
-            float? pupilDiameterRight = null;
-            float? pupilDiameter3DLeft = null;
-            float? pupilDiameter3DRight = null;
-            float? pupilConfidenceLeft = null;
-            float? pupilConfidenceRight = null;
-            float? pupilTimestampLeft = null;
-            float? pupilTimestampRight = null;
+            double? pupilDiameterLeft = null;
+            double? pupilDiameterRight = null;
+            double? pupilDiameter3DLeft = null;
+            double? pupilDiameter3DRight = null;
+            double? pupilConfidenceLeft = null;
+            double? pupilConfidenceRight = null;
+            double? pupilTimestampLeft = null;
+            double? pupilTimestampRight = null;
             float? hmdPositionX = null;
             float? hmdPositionY = null;
             float? hmdPositionZ = null;
@@ -107,12 +107,12 @@ public class TestController : MonoBehaviour
             {
                 pupilConfidenceLeft = Pupil.values.Confidences[0];
                 pupilConfidenceRight = Pupil.values.Confidences[1];
-                pupilDiameter3DLeft = (float)Pupil.values.BaseData[0].diameter_3d;
-                pupilDiameter3DRight = (float)Pupil.values.BaseData[1].diameter_3d;
-                pupilDiameterLeft = (float)Pupil.values.BaseData[0].diameter;
-                pupilDiameterRight = (float)Pupil.values.BaseData[1].diameter;
-                pupilTimestampLeft = (float)Pupil.values.BaseData[0].timestamp;
-                pupilTimestampRight = (float)Pupil.values.BaseData[1].timestamp;
+                pupilDiameter3DLeft = Pupil.values.BaseData[0].diameter_3d;
+                pupilDiameter3DRight = Pupil.values.BaseData[1].diameter_3d;
+                pupilDiameterLeft = Pupil.values.BaseData[0].diameter;
+                pupilDiameterRight = Pupil.values.BaseData[1].diameter;
+                pupilTimestampLeft = Pupil.values.BaseData[0].timestamp;
+                pupilTimestampRight = Pupil.values.BaseData[1].timestamp;
                 Vector3 htcPosition = _htcVive.Find("Camera (eye)").position;
                 Vector3 htcRotation = _htcVive.Find("Camera (eye)").rotation.eulerAngles;
                 hmdPositionX = htcPosition.x;
@@ -240,7 +240,7 @@ public class TestController : MonoBehaviour
 
     private void EvaluateEndedSequence()
     {
-        if ((float) _numberOfErrors / TestBlockData.NumberOfTargets > TestBlockData.ErrorThreshold / 100f)
+        if ((float)_numberOfErrors / TestBlockData.NumberOfTargets > TestBlockData.ErrorThreshold / 100f)
         {
             Debug.Log("----Number of errors exceeds error threshold - Restarting current test sequence----");
             TestBlockData.Sequences[_sequenceIndex].SequenceOfRepeats++;
@@ -290,7 +290,7 @@ public class TestController : MonoBehaviour
     private void EvaluateEndedBlock()
     {
         //Calculates a throughput for the block as an average of the throughputs of all sequences
-        float throughputTotal = 0;
+        double throughputTotal = 0;
         foreach (TestSequence sequence in TestBlockData.Sequences)
         {
             throughputTotal += sequence.Throughput;
@@ -546,14 +546,14 @@ public class TestController : MonoBehaviour
     public void VerificationStep()
     {
 
-        float? pupilDiameterLeft = null;
-        float? pupilDiameterRight = null;
-        float? pupilDiameter3DLeft = null;
-        float? pupilDiameter3DRight = null;
-        float? pupilConfidenceLeft = null;
-        float? pupilConfidenceRight = null;
-        float? pupilTimestampLeft = null;
-        float? pupilTimestampRight = null;
+        double? pupilDiameterLeft = null;
+        double? pupilDiameterRight = null;
+        double? pupilDiameter3DLeft = null;
+        double? pupilDiameter3DRight = null;
+        double? pupilConfidenceLeft = null;
+        double? pupilConfidenceRight = null;
+        double? pupilTimestampLeft = null;
+        double? pupilTimestampRight = null;
         float? hmdPositionX = null;
         float? hmdPositionY = null;
         float? hmdPositionZ = null;
@@ -563,12 +563,12 @@ public class TestController : MonoBehaviour
         if (TestBlockData.SelectedVRHMD == TestBlock.VRHMD.VIVE) {
             pupilConfidenceLeft = Pupil.values.Confidences[0];
             pupilConfidenceRight = Pupil.values.Confidences[1];
-            pupilDiameter3DLeft = (float)Pupil.values.BaseData[0].diameter_3d;
-            pupilDiameter3DRight = (float)Pupil.values.BaseData[1].diameter_3d;
-            pupilDiameterLeft = (float)Pupil.values.BaseData[0].diameter;
-            pupilDiameterRight = (float)Pupil.values.BaseData[1].diameter;
-            pupilTimestampLeft = (float)Pupil.values.BaseData[0].timestamp;
-            pupilTimestampRight = (float)Pupil.values.BaseData[1].timestamp;
+            pupilDiameter3DLeft = Pupil.values.BaseData[0].diameter_3d;
+            pupilDiameter3DRight = Pupil.values.BaseData[1].diameter_3d;
+            pupilDiameterLeft = Pupil.values.BaseData[0].diameter;
+            pupilDiameterRight = Pupil.values.BaseData[1].diameter;
+            pupilTimestampLeft = Pupil.values.BaseData[0].timestamp;
+            pupilTimestampRight = Pupil.values.BaseData[1].timestamp;
             Vector3 htcPosition = _htcVive.Find("Camera (eye)").position;
             Vector3 htcRotation = _htcVive.Find("Camera (eye)").rotation.eulerAngles;
             hmdPositionX = htcPosition.x;

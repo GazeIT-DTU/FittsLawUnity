@@ -22,14 +22,14 @@ public class TestSequence {
     // Test Result Data.
     public DateTime StartTime;
     public double IndexOfDifficulty;
-    public float EffectiveAmplitude;
-    public float EffectiveTargetWidth;
-    public float EffecttiveIndexOfDifficulty;
+    public double EffectiveAmplitude;
+    public double EffectiveTargetWidth;
+    public double EffecttiveIndexOfDifficulty;
     public int SequenceOfRepeats;
     public int Errors;
-    public float MovementTime;
-    public float ErrorRate;
-    public float Throughput;
+    public double MovementTime;
+    public double ErrorRate;
+    public double Throughput;
 
     /// <summary>
     /// TestSequence constructor. 
@@ -118,7 +118,7 @@ public class TestSequence {
     /// </summary>
     public void CalculateErrorRate()
     {
-        ErrorRate = ((float) Errors / (float) Trials.Count) * 100;
+        ErrorRate = (Errors / Trials.Count) * 100;
     }
     
     /// <summary>

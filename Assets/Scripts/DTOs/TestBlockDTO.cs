@@ -38,9 +38,9 @@ public class TestBlockDTO {
     public string HoverColor { get; set; }
     public string ReadyForGestureColor { get; set; }
 
-    public float MovementTime { get; set; }
-    public float ErrorRate { get; set; }
-    public float Throughput { get; set; }
+    public double MovementTime { get; set; }
+    public double ErrorRate { get; set; }
+    public double Throughput { get; set; }
 
     public List<TestSequenceDTO> TestSequenceDTOs;
     public List<TestVerificationDTO> TestVerificationDTOs;
@@ -77,7 +77,7 @@ public class TestBlockDTO {
     /// <param name="errorRate"> The average percentage of errors over all sequences.</param>
     /// <param name="throughput"> The average throughput of all sequences.</param>
     public TestBlockDTO(string blockCode, string participantCode, DateTime startTime, string vrhmd, string conditionCode, float errorThreshold, float spatialHysteresis, string controlMethod, string confirmationMethod, float dwellTime, int timeout, int eyeSmoothFactor, float mouseSensivity, 
-        bool randomizedTargetConditions, bool beepOnError, bool showCursor, bool hoverHightlight, bool buttonDownHighlight, bool recordGazePosition, Color backgroundColor, Color cursorColor, Color targetColor, Color buttonDownColor, Color hoverColor, Color readyForGestureColor, float movementTime, float errorRate, float throughput)
+        bool randomizedTargetConditions, bool beepOnError, bool showCursor, bool hoverHightlight, bool buttonDownHighlight, bool recordGazePosition, Color backgroundColor, Color cursorColor, Color targetColor, Color buttonDownColor, Color hoverColor, Color readyForGestureColor, double movementTime, double errorRate, double throughput)
     {
         TestSequenceDTOs = new List<TestSequenceDTO>();
         TestVerificationDTOs = new List<TestVerificationDTO>();

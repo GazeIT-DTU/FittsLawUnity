@@ -59,8 +59,8 @@ public class TestTrial
     /// <param name="hmdRotationX"> X coordinate rotation of the hmd.</param>
     /// <param name="hmdRotationY"> Y coordinate rotation of the hmd.</param>
     /// <param name="hmdRotationZ"> Z coordinate rotation of the hmd.</param>
-    public void LogData(double msProgress, Vector2 cursorPosition, Vector2 gazePosition, float? pupilDiameterLeft, float? pupilDiameterRight, 
-        float? pupilDiameter3DLeft, float? pupilDiameter3DRight, float? pupilConfidenceLeft, float? pupilConfidenceRight, float? pupilTimestampLeft, float? pupilTimestampRight,
+    public void LogData(double msProgress, Vector2 cursorPosition, Vector2 gazePosition, double? pupilDiameterLeft, double? pupilDiameterRight,
+        double? pupilDiameter3DLeft, double? pupilDiameter3DRight, double? pupilConfidenceLeft, double? pupilConfidenceRight, double? pupilTimestampLeft, double? pupilTimestampRight,
         float headMovement, Vector2 nosePosition, float? hmdPositionX, float? hmdPositionY, float? hmdPositionZ, float? hmdRotationX, float? hmdRotationY, float? hmdRotationZ)
     {
         Logs.Add(new DataLog(msProgress, cursorPosition, gazePosition, pupilDiameterLeft, pupilDiameterRight, pupilDiameter3DLeft, pupilDiameter3DRight,

@@ -44,9 +44,9 @@ public class TestBlock {
     public Color ReadyForGestureColor;
 
     //Test Result Data
-    public float MovementTime;
-    public float ErrorRate;
-    public float Throughput;
+    public double MovementTime;
+    public double ErrorRate;
+    public double Throughput;
 
     public List<TestSequence> Sequences;
     public List<TestVerification> Verifications;
@@ -164,7 +164,7 @@ public class TestBlock {
     public void CalculateErrorRate()
     {
         int errors = Sequences.Sum(sequence => sequence.Errors);
-        ErrorRate = (float)errors / (float)(NumberOfTargets * TargetAmplitudes.Count * TargetDiameters.Count) * 100f;
+        ErrorRate = errors / (float)(NumberOfTargets * TargetAmplitudes.Count * TargetDiameters.Count) * 100f;
     }
 
     /// <summary>

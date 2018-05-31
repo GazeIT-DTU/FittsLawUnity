@@ -18,14 +18,14 @@ public class TestSequenceDTO {
     public int TargetAmplitude { get; set; }
     public float TargetWidth { get; set; }
     public double IndexOfDifficulty { get; set; }
-    public float EffectiveAmplitude { get; set; }
-    public float EffectiveTargetWidth { get; set; }
-    public float EffecttiveIndexOfDifficulty { get; set; }
+    public double EffectiveAmplitude { get; set; }
+    public double EffectiveTargetWidth { get; set; }
+    public double EffecttiveIndexOfDifficulty { get; set; }
     public int SequenceOfRepeats { get; set; }
     public int Errors { get; set; }
-    public float MovementTime { get; set; }
-    public float ErrorRate { get; set; }
-    public float Throughput { get; set; }
+    public double MovementTime { get; set; }
+    public double ErrorRate { get; set; }
+    public double Throughput { get; set; }
 
     public List<TestTrialDTO> TestTrialDTOs;
 
@@ -47,7 +47,7 @@ public class TestSequenceDTO {
     /// <param name="errorRate"> The percentage of errors that occured.</param>
     /// <param name="throughput"> The throughput of the sequence. (Fitts' Law)</param>
     public TestSequenceDTO(int sequenceNumber, int testBlockDto, DateTime startTime, int targetAmplitude, float targetWidth,
-        double indexOfDifficulty, float effectiveAmplitude, float effectiveTargetWidth, float effecttiveIndexOfDifficulty, int sequenceOfRepeats, int errors, float movementTime, float errorRate, float throughput)
+        double indexOfDifficulty, double effectiveAmplitude, double effectiveTargetWidth, double effecttiveIndexOfDifficulty, int sequenceOfRepeats, int errors, double movementTime, double errorRate, double throughput)
     {
         SequenceNumber = sequenceNumber;
         TestBlockId = testBlockDto;
