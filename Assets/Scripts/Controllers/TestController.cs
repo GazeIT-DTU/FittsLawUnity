@@ -452,7 +452,7 @@ public class TestController : MonoBehaviour
     {
         Vector2 cursorPos = GazeCursor.Instance.transform.localPosition;
         Vector2 targetPos = CurrentTarget.transform.localPosition;
-        return targetPos - cursorPos;
+        return cursorPos - targetPos;
     }
 
     private void TrackCursorMovement()

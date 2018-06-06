@@ -75,7 +75,7 @@ public class TestTrial
     /// <returns>Returns a TestTrialDTO.</returns>
     public TestTrialDTO CreateDTO(int testSequenceId)
     {
-       return new TestTrialDTO(testSequenceId, TrialNumber, StartTime, TargetAngle, TimeToFixate, TimeToActivate, 
+       return new TestTrialDTO(testSequenceId, TrialNumber, StartTime, TargetAngle - 90, TimeToFixate, TimeToActivate, 
             TargetCenterError.x, TargetCenterError.y, TotalHeadMovement, TotalCursorMovement, TimedOut, Error);
     }
 
