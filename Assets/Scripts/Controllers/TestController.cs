@@ -397,7 +397,7 @@ public class TestController : MonoBehaviour
         double milliseconds = GetNowInMilliseconds();
         milliseconds = milliseconds - _startMilli;
         TestBlockData.Sequences[_sequenceIndex].Trials[_currentTrialNumber].TimeToActivate = milliseconds;
-        TestBlockData.Sequences[_sequenceIndex].Trials[_currentTrialNumber].TargetCenterError = CalculateTargetingError();
+        TestBlockData.Sequences[_sequenceIndex].Trials[_currentTrialNumber].TargetCenterError = CalculateTargetingError(TestBlockData.Sequences[_sequenceIndex].Trials[_currentTrialNumber].TargetAngle > 180);
         TestBlockData.Sequences[_sequenceIndex].Trials[_currentTrialNumber].TimedOut = false;
         if (!targetHovered)
             RegisterTargetError();
@@ -448,11 +448,18 @@ public class TestController : MonoBehaviour
         return Math.Floor(milli);
     }
 
-    private Vector2 CalculateTargetingError()
+    /// <summary>
+    /// Calculates target center error
+    /// </summary>
+    /// <param name="isFromRightToLeft">Is the target being calculated on the left side (TargetAngle > 180)</param>
+    /// <returns>Difference between selected point and center of target</returns>
+    private Vector2 CalculateTargetingError(bool isTargetLeft)
     {
         Vector2 cursorPos = GazeCursor.Instance.transform.localPosition;
         Vector2 targetPos = CurrentTarget.transform.localPosition;
-        return cursorPos - targetPos;
+        float x = isTargetLeft ? targetPos.x - cursorPos.x : cursorPos.x - targetPos.x;
+        float y = cursorPos.y - targetPos.y;
+        return new Vector2(x, y);
     }
 
     private void TrackCursorMovement()
@@ -473,8 +480,9 @@ public class TestController : MonoBehaviour
 
     public static Vector2 GetTargetSpawnPosition(float amplitude, float angle)
     {
-        float x = amplitude * Mathf.Cos(angle * Mathf.Deg2Rad);
-        float y = amplitude * Mathf.Sin(angle * Mathf.Deg2Rad);
+        angle -= 90;
+        float x = amplitude * Mathf.Cos(-angle * Mathf.Deg2Rad);
+        float y = amplitude * Mathf.Sin(-angle * Mathf.Deg2Rad);
         return new Vector2(x, y);
     }
 

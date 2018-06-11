@@ -60,7 +60,7 @@ public class TestSequence {
         List<TestTrial> steps = new List<TestTrial>();
         for (int i = 0; i < amountOfTargets; i++) {
             float angle = i * deltaAngle;
-            steps.Add(new TestTrial(angle + 90));
+            steps.Add(new TestTrial(angle));
         }
 
         TestTrial[] sortedSteps = new TestTrial[amountOfTargets];
