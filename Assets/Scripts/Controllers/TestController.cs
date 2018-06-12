@@ -253,16 +253,15 @@ public class TestController : MonoBehaviour
         {
             Debug.Log("----Test Sequence Completed Successfully----");
             //Calculate result data for sequence just completed
-            List<DxCalculationSet> calculationSets = new List<DxCalculationSet>();
+            List<double> dxs = new List<double>();
+            List<double> aes = new List<double>();
 
             for (int i = 0; i < TestBlockData.Sequences[_sequenceIndex].Trials.Count; i++) 
             {
                 DxCalculationSet calcSet = new DxCalculationSet();
-                TestTrial fromTarget = null;
-                if (i == 0)
-                    fromTarget = TestBlockData.Sequences[_sequenceIndex].Trials[TestBlockData.Sequences[_sequenceIndex].Trials.Count - 1];
-                else
-                    fromTarget = TestBlockData.Sequences[_sequenceIndex].Trials[i-1];
+                TestTrial fromTarget = i == 0 ? 
+                    TestBlockData.Sequences[_sequenceIndex].Trials[TestBlockData.Sequences[_sequenceIndex].Trials.Count - 1] : 
+                    TestBlockData.Sequences[_sequenceIndex].Trials[i-1];
 
                 TestTrial toTarget = TestBlockData.Sequences[_sequenceIndex].Trials[i];
 
@@ -270,18 +269,22 @@ public class TestController : MonoBehaviour
                 calcSet.To = GetTargetSpawnPosition(TestBlockData.Sequences[_sequenceIndex].TargetAmplitude, toTarget.TargetAngle);
                 calcSet.Selection = calcSet.To + toTarget.TargetCenterError;
 
-                calculationSets.Add(calcSet);
-            }
-            List<double> dxs = TestDataHelper.CalculateDeltaX(calculationSets);
-            List<double> ae = dxs.Select(dx => dx + TestBlockData.Sequences[_sequenceIndex].TargetAmplitude).ToList();
+                double dx = TestDataHelper.CalculateDeltaX(calcSet);
+                dxs.Add(dx);
 
-            TestBlockData.Sequences[_sequenceIndex].Throughput = TestDataHelper.CalculateThroughput(ae, dxs, TestBlockData.Sequences[_sequenceIndex].GetMovementTimes());
+                if (i == 0)
+                    aes.Add(TestBlockData.Sequences[_sequenceIndex].TargetAmplitude + dx);
+                else
+                    aes.Add(TestBlockData.Sequences[_sequenceIndex].TargetAmplitude + dx + dxs[i -1]);
+            }
+
+            TestBlockData.Sequences[_sequenceIndex].Throughput = TestDataHelper.CalculateThroughput(aes, dxs, TestBlockData.Sequences[_sequenceIndex].GetMovementTimes());
             TestBlockData.Sequences[_sequenceIndex].CalculateMeanMovementTime();
             TestBlockData.Sequences[_sequenceIndex].Errors = _numberOfErrors;
             TestBlockData.Sequences[_sequenceIndex].CalculateErrorRate();
-            TestBlockData.Sequences[_sequenceIndex].EffectiveAmplitude = TestDataHelper.Mean(ae);
+            TestBlockData.Sequences[_sequenceIndex].EffectiveAmplitude = TestDataHelper.Mean(aes);
             TestBlockData.Sequences[_sequenceIndex].EffectiveTargetWidth = TestDataHelper.CalculateEffectiveWidth(dxs);
-            TestBlockData.Sequences[_sequenceIndex].EffecttiveIndexOfDifficulty = TestDataHelper.CalculateEffectiveDifficultyIndex(ae, TestBlockData.Sequences[_sequenceIndex].EffectiveTargetWidth);
+            TestBlockData.Sequences[_sequenceIndex].EffecttiveIndexOfDifficulty = TestDataHelper.CalculateEffectiveDifficultyIndex(aes, TestBlockData.Sequences[_sequenceIndex].EffectiveTargetWidth);
             ClearInitialTargets();
             StopTest();
         }
@@ -397,7 +400,7 @@ public class TestController : MonoBehaviour
         double milliseconds = GetNowInMilliseconds();
         milliseconds = milliseconds - _startMilli;
         TestBlockData.Sequences[_sequenceIndex].Trials[_currentTrialNumber].TimeToActivate = milliseconds;
-        TestBlockData.Sequences[_sequenceIndex].Trials[_currentTrialNumber].TargetCenterError = CalculateTargetingError(TestBlockData.Sequences[_sequenceIndex].Trials[_currentTrialNumber].TargetAngle > 180);
+        TestBlockData.Sequences[_sequenceIndex].Trials[_currentTrialNumber].TargetCenterError = CalculateTargetingError();
         TestBlockData.Sequences[_sequenceIndex].Trials[_currentTrialNumber].TimedOut = false;
         if (!targetHovered)
             RegisterTargetError();
@@ -453,13 +456,11 @@ public class TestController : MonoBehaviour
     /// </summary>
     /// <param name="isFromRightToLeft">Is the target being calculated on the left side (TargetAngle > 180)</param>
     /// <returns>Difference between selected point and center of target</returns>
-    private Vector2 CalculateTargetingError(bool isTargetLeft)
+    private Vector2 CalculateTargetingError()
     {
         Vector2 cursorPos = GazeCursor.Instance.transform.localPosition;
         Vector2 targetPos = CurrentTarget.transform.localPosition;
-        float x = isTargetLeft ? targetPos.x - cursorPos.x : cursorPos.x - targetPos.x;
-        float y = cursorPos.y - targetPos.y;
-        return new Vector2(x, y);
+        return cursorPos - targetPos;
     }
 
     private void TrackCursorMovement()

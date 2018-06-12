@@ -112,28 +112,20 @@ class TestDataHelper {
     /// <summary>
     /// Convert list of Vector2 offsets to list of magnitude values.
     /// </summary>
-    public static List<double> CalculateDeltaX(List<DxCalculationSet> calculationSets)
+    public static double CalculateDeltaX(DxCalculationSet calculationSet)
     {
-        List<double> dxs = new List<double>();
+        double x = calculationSet.Selection.x;
+        double y = calculationSet.Selection.y;
+        double x1 = calculationSet.From.x;
+        double y1 = calculationSet.From.y;
+        double x2 = calculationSet.To.x;
+        double y2 = calculationSet.To.y;
 
-        foreach (DxCalculationSet set in calculationSets)
-        {
-            double x = set.Selection.x;
-            double y = set.Selection.y;
-            double x1 = set.From.x;
-            double y1 = set.From.y;
-            double x2 = set.To.x;
-            double y2 = set.To.y;
+        double a = Hypotenuse(x1 - x2, y1 - y2);
+        double b = Hypotenuse(x - x2, y - y2);
+        double c = Hypotenuse(x1 - x, y1 - y);
 
-            double a = Hypotenuse(x1 - x2, y1 - y2);
-            double b = Hypotenuse(x - x2, y - y2);
-            double c = Hypotenuse(x1 - x, y1 - y);
-
-            double dx = (c * c - b * b - a * a) / (2.0f * a);
-            dxs.Add(dx);
-        }
-
-        return dxs;
+        return (c * c - b * b - a * a) / (2.0f * a);
     }
 
     public struct DxCalculationSet
