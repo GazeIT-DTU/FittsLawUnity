@@ -272,10 +272,12 @@ public class TestController : MonoBehaviour
                 double dx = TestDataHelper.CalculateDeltaX(calcSet);
                 dxs.Add(dx);
 
+                double a = TestDataHelper.CalculateA(calcSet);
+
                 if (i == 0)
-                    aes.Add(TestBlockData.Sequences[_sequenceIndex].TargetAmplitude + dx);
+                    aes.Add(a + dx);
                 else
-                    aes.Add(TestBlockData.Sequences[_sequenceIndex].TargetAmplitude + dx + dxs[i -1]);
+                    aes.Add(a + dx + dxs[i -1]);
             }
 
             TestBlockData.Sequences[_sequenceIndex].Throughput = TestDataHelper.CalculateThroughput(aes, dxs, TestBlockData.Sequences[_sequenceIndex].GetMovementTimes());

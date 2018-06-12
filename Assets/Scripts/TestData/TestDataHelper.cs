@@ -128,6 +128,16 @@ class TestDataHelper {
         return (c * c - b * b - a * a) / (2.0f * a);
     }
 
+    public static double CalculateA(DxCalculationSet calculationSet)
+    {
+        double x1 = calculationSet.From.x;
+        double y1 = calculationSet.From.y;
+        double x2 = calculationSet.To.x;
+        double y2 = calculationSet.To.y;
+
+        return Hypotenuse(x1 - x2, y1 - y2);
+    }
+
     public struct DxCalculationSet
     {
         public Vector2 From;
